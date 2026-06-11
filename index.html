@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Presente Especial">
+  <link rel="apple-touch-icon" href="assets/images/foto-musica.jpg">
+  <meta name="theme-color" content="#121212">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Presente Especial</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- TELA INICIAL - Hero Banner (overlay separado) -->
+  <div id="hero-overlay" class="hero-overlay">
+    <section class="section hero-section">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <div class="hero-spotify-icon">
+          <svg viewBox="0 0 24 24" fill="#1DB954" width="48" height="48">
+            <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.781.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+          </svg>
+        </div>
+        <h1 class="hero-title">
+          Juan separou um<br>
+          <span class="hero-green">presente especial!</span>
+        </h1>
+        <p class="hero-subtitle">Um momento único feito com carinho para celebrar a jornada de vocês</p>
+        <button id="btnVerPresente" class="btn-primary">Ver Presente</button>
+      </div>
+      <div class="hero-bottom-nav">
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v11a1 1 0 001 1h5.5v-6h5v6H20a1 1 0 001-1V9l-9-7-9 7z"/></svg><span>Início</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.5 2.5a3 3 0 013 3v2.5H20a3 3 0 013 3v8a3 3 0 01-3 3H4a3 3 0 01-3-3v-8a3 3 0 013-3h2.5V5.5a3 3 0 013-3h5zm-7 5.5H4a1 1 0 00-1 1v8a1 1 0 001 1h16a1 1 0 001-1v-8a1 1 0 00-1-1h-3.5v1.5a1.5 1.5 0 01-3 0V8h-5v1.5a1.5 1.5 0 01-3 0V8zm7-3.5h-5a1 1 0 00-1 1V6h7V5.5a1 1 0 00-1-1z"/></svg><span>Buscar</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10.5 2.5a8 8 0 015.5 13.7V22l-5.5-3-5.5 3v-5.8A8 8 0 0110.5 2.5zm0 2a6 6 0 100 12 6 6 0 000-12z"/></svg><span>Sua Biblioteca</span></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- MAIN CONTENT (scrollável) -->
+  <div id="main-content" class="main-content" style="display:none;">
+
+    <!-- SEÇÃO DO PLAYER -->
+    <section id="player-section" class="section player-section">
+      <div class="player-container">
+        <div class="player-album">
+          <img id="albumArt" src="assets/images/foto-musica.jpg" alt="Álbum" class="album-cover">
+          <div class="player-controls">
+            <div class="controls-top">
+              <button class="control-btn like-btn active" id="btnLike">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </button>
+              <button class="control-btn" id="btnPrev">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                  <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                </svg>
+              </button>
+              <button class="control-btn play-btn" id="btnPlay">
+                <svg viewBox="0 0 24 24" width="32" height="32">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </button>
+              <button class="control-btn" id="btnNext">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                  <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                </svg>
+              </button>
+              <button class="control-btn" id="btnMore">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                  <circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/>
+                </svg>
+              </button>
+            </div>
+            <div class="progress-container">
+              <span class="time-current" id="timeCurrent">0:00</span>
+              <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+                <div class="progress-thumb" id="progressThumb"></div>
+              </div>
+              <span class="time-total" id="timeTotal">0:00</span>
+            </div>
+          </div>
+          <div class="player-info">
+            <p class="music-title">Nossa Música</p>
+            <p class="music-artist">Juan & Evellyn</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOBRE O CASAL -->
+    <section id="about" class="section about-section">
+      <h2 class="section-title">Sobre o casal</h2>
+      <div class="about-container">
+        <div class="about-photo">
+          <img src="assets/images/foto-casal.jpg" alt="Juan & Evellyn">
+        </div>
+        <div class="about-countdown" id="countdown">
+          <div class="countdown-grid">
+            <div class="countdown-item">
+              <span class="countdown-number" id="countYears">00</span>
+              <span class="countdown-label">Anos</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="countMonths">00</span>
+              <span class="countdown-label">Meses</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="countDays">00</span>
+              <span class="countdown-label">Dias</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="countHours">00</span>
+              <span class="countdown-label">Horas</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="countMinutes">00</span>
+              <span class="countdown-label">Minutos</span>
+            </div>
+            <div class="countdown-item">
+              <span class="countdown-number" id="countSeconds">00</span>
+              <span class="countdown-label">Segundos</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENSAGEM ESPECIAL -->
+    <section id="message" class="section message-section">
+      <h2 class="section-title">Mensagem especial</h2>
+      <div class="message-preview" id="messagePreview">
+        <div class="message-lyrics">
+          <p class="lyric-line">Meu amor,</p>
+          <p class="lyric-line">Cada dia ao seu lado é uma nova descoberta...</p>
+          <p class="lyric-line">Você ilumina minha vida de uma forma que eu nunca imaginei ser possível.</p>
+          <p class="lyric-line">Seu sorriso é a coisa mais linda que eu já vi.</p>
+          <p class="lyric-line">Seu abraço é o meu lugar favorito no mundo.</p>
+          <p class="lyric-line">Obrigado por cada momento, cada risada, cada olhar.</p>
+          <p class="lyric-line">Você é o melhor presente que a vida poderia me dar.</p>
+          <p class="lyric-line">Te amo mais do que palavras podem expressar.</p>
+          <p class="lyric-line">Que nossa história seja eterna.</p>
+          <p class="lyric-line">Com todo meu amor,</p>
+          <p class="lyric-line">Juan 💚</p>
+        </div>
+        <div class="message-fade"></div>
+        <div class="message-btn-block">
+          <button class="btn-message" id="btnShowMessage">Mostrar mensagem</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RETROSPECTIVA -->
+    <section id="retro" class="section retro-section">
+      <h2 class="section-title">Sua Retrospectiva</h2>
+      <p class="section-subtitle">Explore o seu tempo de casal</p>
+
+      <div class="retro-card" id="btnOpenRetro">
+        <div class="retro-card-inner">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+          <span>Ver Retrospectiva</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- RETROSPECTIVA OVERLAY (Full screen carousel) -->
+    <div id="retroOverlay" class="retro-overlay">
+      <div class="retro-screen" id="retroScreen">
+
+        <!-- TELA 1: Horas Juntos -->
+        <div class="retro-page active" id="retroPage1">
+      <div class="retro-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="retro-hours">
+            <div class="hours-scroll" id="hoursScroll"></div>
+            <div class="hours-result" id="hoursResult">
+              <div class="hours-big" id="hoursBig">0</div>
+              <p class="hours-label">Horas juntos</p>
+              <p class="hours-percent" id="hoursPercent">14% dos casais no mundo 🎉</p>
+            </div>
+          </div>
+          
+          <div class="retro-nav">
+            <button class="btn-next-session" data-next="retroPage2">Próxima sessão</button>
+          </div>
+        </div>
+
+        <!-- TELA 2: Fotos Cards -->
+        <div class="retro-page" id="retroPage2">
+      <div class="retro-dots"><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="retro-cards">
+            <div class="cards-container" id="cardsContainer">
+              <div class="card-track" id="cardTrack">
+                <div class="photo-card" data-index="0">
+                  <div class="card-label">Nosso começo</div>
+                  <img src="assets/images/foto1.jpg" alt="Momento 1">
+                </div>
+                <div class="photo-card" data-index="1">
+                  <div class="card-label">Momentos especiais</div>
+                  <img src="assets/images/foto2.jpg" alt="Momento 2">
+                </div>
+                <div class="photo-card" data-index="2">
+                  <div class="card-label">Aventuras juntos</div>
+                  <img src="assets/images/foto3.jpg" alt="Momento 3">
+                </div>
+                <div class="photo-card" data-index="3">
+                  <div class="card-label">Nosso amor</div>
+                  <img src="assets/images/foto4.jpg" alt="Momento 4">
+                </div>
+                <div class="photo-card" data-index="4">
+                  <div class="card-label">Para sempre</div>
+                  <img src="assets/images/foto5.jpg" alt="Momento 5">
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="retro-nav">
+            <button class="btn-next-session" data-next="retroPage3">Próxima sessão</button>
+          </div>
+        </div>
+
+        <!-- TELA 3: Timeline -->
+        <div class="retro-page" id="retroPage3">
+      <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="retro-timeline">
+            <h2 class="section-title">Nossa jornada</h2>
+            <p class="section-subtitle">Cada momento que nos trouxe até aqui</p>
+            <div class="stars-bg" id="starsBg"></div>
+            <div class="timeline-container" id="timelineContainer">
+              <div class="timeline-line"></div>
+              <div class="timeline-item left">
+                <div class="polaroid">
+                  <img src="assets/images/foto1.jpg" alt="Momento">
+                  <div class="polaroid-caption">O dia que nos conhecemos</div>
+                </div>
+                <span class="timeline-heart">♥</span>
+                <div class="timeline-info">
+                  <div class="timeline-title">27/02/2022</div>
+                  <div class="timeline-desc">Quando nossos olhares se encontraram</div>
+                </div>
+              </div>
+              <div class="timeline-item right">
+                <div class="polaroid">
+                  <img src="assets/images/foto2.jpg" alt="Momento">
+                  <div class="polaroid-caption">Nossa primeira viagem</div>
+                </div>
+                <span class="timeline-heart">♥</span>
+                <div class="timeline-info">
+                  <div class="timeline-title">Nosso primeiro passeio</div>
+                  <div class="timeline-desc">Aventuras que marcaram nossa história</div>
+                </div>
+              </div>
+              <div class="timeline-item left">
+                <div class="polaroid">
+                  <img src="assets/images/foto3.jpg" alt="Momento">
+                  <div class="polaroid-caption">Dia inesquecível</div>
+                </div>
+                <span class="timeline-heart">♥</span>
+                <div class="timeline-info">
+                  <div class="timeline-title">Momentos mágicos</div>
+                  <div class="timeline-desc">Cada sorriso seu é um tesouro</div>
+                </div>
+              </div>
+              <div class="timeline-item right">
+                <div class="polaroid">
+                  <img src="assets/images/foto4.jpg" alt="Momento">
+                  <div class="polaroid-caption">Nossa cumplicidade</div>
+                </div>
+                <span class="timeline-heart">♥</span>
+                <div class="timeline-info">
+                  <div class="timeline-title">Conexão única</div>
+                  <div class="timeline-desc">Dois corpos, uma alma</div>
+                </div>
+              </div>
+              <div class="timeline-item left">
+                <div class="polaroid">
+                  <img src="assets/images/foto5.jpg" alt="Momento">
+                  <div class="polaroid-caption">Sempre juntos</div>
+                </div>
+                <span class="timeline-heart">♥</span>
+                <div class="timeline-info">
+                  <div class="timeline-title">Para todo o sempre</div>
+                  <div class="timeline-desc">Que venham muitos anos pela frente</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="retro-nav">
+            <button class="btn-next-session" data-next="retroPage4">Próxima sessão</button>
+          </div>
+        </div>
+
+        <!-- TELA 4: Constelação -->
+        <div class="retro-page" id="retroPage4">
+      <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span></div>
+          <div class="retro-constellation">
+            <h2 class="constellation-names">
+              <span class="handwrite-name">Juan</span>
+              <span class="handwrite-ampersand">&</span>
+              <span class="handwrite-name">Evellyn</span>
+            </h2>
+            <div class="constellation-circle" id="constellationCircle">
+              <canvas id="constellationCanvas"></canvas>
+              <div class="constellation-stars-bg"></div>
+            </div>
+            <p class="constellation-subtitle">O céu quando nossos mundos se colidiram</p>
+          </div>
+          
+          <div class="retro-nav">
+            <button class="btn-next-session" data-next="retroPage5">Próxima sessão</button>
+          </div>
+        </div>
+
+        <!-- TELA 5: Resumo do Casal -->
+        <div class="retro-page" id="retroPage5">
+      <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span></div>
+          <div class="retro-summary" id="retroSummary">
+            <div class="confetti-container" id="confettiContainer"></div>
+            <div class="summary-content">
+              <div class="summary-badge">RESUMO DO CASAL</div>
+              <div class="summary-photo-circle">
+                <img src="assets/images/foto-casal.jpg" alt="Casal">
+              </div>
+              <h2 class="summary-title">Nossa conexão</h2>
+              <p class="summary-names">Juan & Evellyn</p>
+              <div class="summary-stats">
+                <div class="stat-modal">
+                  <div class="stat-modal-content">
+                    <svg viewBox="0 0 24 24" fill="#1DB954" width="22" height="22">
+                      <path d="M6.76 4.84l-1.8-1.79-1.41 1.41 1.79 1.79 1.42-1.41zM4 10.5H1v2h3v-2zm9-9.95h-2V3.5h2V.55zm7.45 3.91l-1.41-1.41-1.79 1.79 1.41 1.41 1.79-1.79zm-3.21 13.7l1.79 1.8 1.41-1.41-1.8-1.79-1.4 1.4zM20 10.5v2h3v-2h-3zm-8-5c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm-1 16.95h2V19.5h-2v2.95zm-7.45-3.91l1.41 1.41 1.79-1.8-1.41-1.41-1.79 1.8z"/>
+                    </svg>
+                    <span>O nosso amor começou no Verão e já durou <strong id="sumSeasons">0 estações</strong></span>
+                  </div>
+                </div>
+                <div class="stat-modal">
+                  <div class="stat-modal-content">
+                    <svg viewBox="0 0 24 24" fill="#1DB954" width="22" height="22">
+                      <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                    </svg>
+                    <span>DATA ESPECIAL, <strong id="sumDateSpecial">27/02/2022</strong></span>
+                  </div>
+                  <div class="stat-modal-divider"></div>
+                  <div class="stat-days-block">
+                    <span class="stat-days-number" id="sumDays">0</span>
+                    <span class="stat-days-label">DIAS JUNTOS</span>
+                  </div>
+                  <div class="stat-modal-divider"></div>
+                  <div class="stat-top-block">
+                    <span class="stat-top-text">TOP 14% dos casais 💚</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="retro-nav">
+            <button class="btn-next-session" id="btnCloseRetro">Finalizar</button>
+          </div>
+        </div>
+
+      </div>
+      <button class="retro-close" id="btnCloseRetroX">&times;</button>
+    </div>
+
+  </div>
+
+  <!-- TELA DA MENSAGEM (separada do main-content) -->
+  <div id="messageFullscreen" class="message-fullscreen" style="display:none;">
+    <div class="message-fullscreen-header">
+      <button class="message-close-btn" id="btnCloseMessage">&times;</button>
+      <h2 class="section-title">Mensagem especial</h2>
+    </div>
+    <div class="message-fullscreen-content">
+      <div class="message-fullscreen-lyrics">
+        <p class="lyric-line">Meu amor,</p>
+        <p class="lyric-line">Cada dia ao seu lado é uma nova descoberta...</p>
+        <p class="lyric-line">Você ilumina minha vida de uma forma que eu nunca imaginei ser possível.</p>
+        <p class="lyric-line">Seu sorriso é a coisa mais linda que eu já vi.</p>
+        <p class="lyric-line">Seu abraço é o meu lugar favorito no mundo.</p>
+        <p class="lyric-line">Obrigado por cada momento, cada risada, cada olhar.</p>
+        <p class="lyric-line">Você é o melhor presente que a vida poderia me dar.</p>
+        <p class="lyric-line">Te amo mais do que palavras podem expressar.</p>
+        <p class="lyric-line">Que nossa história seja eterna.</p>
+        <p class="lyric-line">Com todo meu amor,</p>
+        <p class="lyric-line">Juan 💚</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
