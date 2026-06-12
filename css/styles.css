@@ -67,7 +67,7 @@ button {
 }
 
 .section-title {
-  font-size: 22px;
+  font-size: 0;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -616,8 +616,7 @@ button {
 
 /* ========== MESSAGE ========== */
 .message-section {
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 0 12px;
   min-height: auto;
 }
 
@@ -769,7 +768,7 @@ button {
 }
 
 .message-fullscreen-lyrics .lyric-line {
-  font-size: 22px;
+  font-size: 0;
   font-weight: 700;
   line-height: 1.8;
   color: rgba(255,255,255,0.9);
@@ -891,8 +890,7 @@ button {
 
 /* ========== TOP MOMENTOS ========== */
 .top-moments-section {
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 0 12px;
   min-height: auto;
 }
 
@@ -988,8 +986,7 @@ button {
 
 /* ========== RETRO CARD (Entry) ========== */
 .retro-section {
-  padding-top: 0;
-  padding-bottom: 0;
+  padding: 0 12px;
   min-height: auto;
 }
 
@@ -1011,7 +1008,7 @@ button {
 }
 
 .retro-card .section-title {
-  font-size: 22px;
+  font-size: 0;
   margin-bottom: 8px;
   color: var(--text-primary);
 }
@@ -1107,7 +1104,7 @@ button {
   justify-content: center;
   background: rgba(255,255,255,0.1);
   border-radius: 50%;
-  font-size: 22px;
+  font-size: 0;
   color: var(--text-primary);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -1479,7 +1476,7 @@ button {
 }
 
 .card-section-title {
-  font-size: 22px;
+  font-size: 0;
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -1879,8 +1876,8 @@ button {
 @supports (padding-top: env(safe-area-inset-top)) {
   .player-header { padding-top: calc(env(safe-area-inset-top) + 8px); }
   .about-section { padding-top: calc(60px + env(safe-area-inset-top)); }
-  .message-section { padding-top: calc(60px + env(safe-area-inset-top)); }
-  .retro-section { padding-top: calc(60px + env(safe-area-inset-top)); }
+  .message-section { padding-top: calc(5px + env(safe-area-inset-top)); }
+  .retro-section { padding-top: calc(5px + env(safe-area-inset-top)); }
   .message-player-footer { padding-bottom: calc(60px + env(safe-area-inset-bottom)); }
 }
 
