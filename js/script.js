@@ -356,6 +356,14 @@ btnOpenRetro.addEventListener('click', () => {
   retroOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
 
+  // Stop any previous constellation animation
+  if (constellationRAF) {
+    cancelAnimationFrame(constellationRAF);
+    constellationRAF = null;
+  }
+  const prevCanvas = $('#constellationCanvas');
+  if (prevCanvas && prevCanvas._stopConstellation) prevCanvas._stopConstellation();
+
   constellationInterval = null;
   // Clean up previous confetti
   if (confettiInterval) {
@@ -389,6 +397,13 @@ function closeRetro() {
   if (nav1) nav1.classList.add('hidden');
   const nav2 = $('#navPage2');
   if (nav2) nav2.classList.add('hidden');
+  // Stop constellation RAF
+  if (constellationRAF) {
+    cancelAnimationFrame(constellationRAF);
+    constellationRAF = null;
+  }
+  const cvs = $('#constellationCanvas');
+  if (cvs && cvs._stopConstellation) cvs._stopConstellation();
   // Stop confetti
   if (confettiInterval) {
     clearInterval(confettiInterval);
@@ -573,91 +588,196 @@ function createStars() {
 }
 
 /* ========== CONSTELLATION ========== */
-let constellationInterval = null;
+let constellationRAF = null;
+let constellationInterval = null; // kept for reset compat
 
 function initConstellation() {
   const canvas = $('#constellationCanvas');
   if (!canvas) return;
-  if (constellationInterval) {
-    clearInterval(constellationInterval);
-    constellationInterval = null;
+
+  // Cancel any previous animation frame
+  if (constellationRAF) {
+    cancelAnimationFrame(constellationRAF);
+    constellationRAF = null;
   }
 
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   const container = canvas.parentElement;
-  const size = container.offsetWidth || 280;
-  canvas.width = size;
-  canvas.height = size;
 
-  const stars = [];
-  const numStars = 30;
-  const constellations = [
-    [0, 1, 2],
-    [3, 4, 5, 6],
-    [7, 8],
-  ];
+  // Wait for DOM layout so offsetWidth is correct
+  requestAnimationFrame(() => {
+    const size = Math.min(container.offsetWidth || 300, container.offsetHeight || 300);
+    canvas.width = size;
+    canvas.height = size;
 
-  for (let i = 0; i < numStars; i++) {
-    stars.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      r: Math.random() * 3.5 + 1.2,
-      alpha: Math.random() * 0.8 + 0.2,
-      speed: Math.random() * 0.02 + 0.005,
-      phase: Math.random() * Math.PI * 2,
-    });
-  }
+    const ctx = canvas.getContext('2d');
 
-  let lineProgress = 0;
-  const startTime = Date.now();
-  const ANIM_DURATION = 4000;
+    // ---- STAR DEFINITIONS ----
+    // Avoid placing stars in margins — keep within 8%-92% of canvas
+    const margin = size * 0.08;
+    const area = size - margin * 2;
 
-  function drawStars() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function rng(min, max) { return Math.random() * (max - min) + min; }
 
-    lineProgress = Math.min(1, (Date.now() - startTime) / ANIM_DURATION);
-
-    // Draw constellation lines (animate in slowly)
-    if (lineProgress > 0) {
-      ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 * lineProgress})`;
-      ctx.lineWidth = 1;
-      constellations.forEach(group => {
-        for (let i = 0; i < group.length - 1; i++) {
-          const a = stars[group[i]];
-          const b = stars[group[i + 1]];
-          if (a && b) {
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
+    const stars = [];
+    const numStars = 70;
+    for (let i = 0; i < numStars; i++) {
+      const isBig = Math.random() < 0.18; // ~18% are bigger/brighter
+      stars.push({
+        x: margin + Math.random() * area,
+        y: margin + Math.random() * area,
+        r: isBig ? rng(2.2, 3.8) : rng(0.6, 2.0),
+        baseAlpha: isBig ? rng(0.7, 1.0) : rng(0.3, 0.75),
+        twinkleSpeed: rng(0.4, 1.6),
+        twinklePhase: rng(0, Math.PI * 2),
+        color: (() => {
+          const r = Math.random();
+          if (r < 0.7) return { r: 255, g: 255, b: 255 };        // white
+          if (r < 0.82) return { r: 200, g: 220, b: 255 };       // cold blue
+          if (r < 0.92) return { r: 255, g: 235, b: 200 };       // warm yellow
+          return { r: 220, g: 200, b: 255 };                      // soft purple
+        })(),
       });
     }
 
-    // Draw stars
-    const time = Date.now() / 1000;
-    stars.forEach(star => {
-      const alpha = star.alpha * (0.6 + 0.4 * Math.sin(time * star.speed + star.phase));
-      ctx.beginPath();
-      ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-      ctx.fill();
+    // ---- CONSTELLATION DEFINITION ----
+    // Groups of star indices that form connected lines
+    // Carefully hand-placed to look like real simple constellations
+    // We'll use 3 separate constellations spread across the canvas
+    const constellations = [
+      // Orion-ish (left side)
+      [2, 8, 15, 22, 30, 38],
+      // Big Dipper-ish (right/top area)
+      [5, 12, 20, 28, 35],
+      // Southern Cross-ish (bottom)
+      [10, 18, 25, 33],
+      // Small triangle accent
+      [45, 52, 60, 45],
+    ];
 
-      // Glow
-      const gradient = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, star.r * 5);
-      gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.4})`);
-      gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-      ctx.beginPath();
-      ctx.arc(star.x, star.y, star.r * 5, 0, Math.PI * 2);
-      ctx.fillStyle = gradient;
-      ctx.fill();
+    // ---- ANIMATION STATE ----
+    const DELAY_BEFORE_LINES = 1200;   // ms before lines start appearing
+    const SEG_DURATION = 900;          // ms to draw each line segment
+    let startTime = null;
+    let running = true;
+
+    // Precompute all segments in order
+    const segments = [];
+    constellations.forEach(group => {
+      for (let i = 0; i < group.length - 1; i++) {
+        const a = stars[group[i] % numStars];
+        const b = stars[group[i + 1] % numStars];
+        if (a && b) segments.push({ a, b });
+      }
     });
-  }
+    const totalSegDuration = segments.length * SEG_DURATION;
 
-  constellationInterval = setInterval(drawStars, 50);
-  drawStars();
+    function drawFrame(timestamp) {
+      if (!running) return;
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+
+      ctx.clearRect(0, 0, size, size);
+
+      const now = timestamp / 1000;
+
+      // ---- DRAW STARS ----
+      stars.forEach(star => {
+        const twinkle = 0.5 + 0.5 * Math.sin(now * star.twinkleSpeed + star.twinklePhase);
+        const alpha = star.baseAlpha * (0.55 + 0.45 * twinkle);
+        const { r, g, b } = star.color;
+
+        // Glow halo
+        const glowR = star.r * 4.5;
+        const grd = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, glowR);
+        grd.addColorStop(0, `rgba(${r},${g},${b},${alpha * 0.35})`);
+        grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, glowR, 0, Math.PI * 2);
+        ctx.fillStyle = grd;
+        ctx.fill();
+
+        // Star core
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+        ctx.fill();
+
+        // Crosshair sparkle for bigger stars
+        if (star.r > 2) {
+          const sparkLen = star.r * 3.5 * (0.7 + 0.3 * twinkle);
+          ctx.save();
+          ctx.globalAlpha = alpha * 0.5;
+          ctx.strokeStyle = `rgb(${r},${g},${b})`;
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(star.x - sparkLen, star.y);
+          ctx.lineTo(star.x + sparkLen, star.y);
+          ctx.moveTo(star.x, star.y - sparkLen);
+          ctx.lineTo(star.x, star.y + sparkLen);
+          ctx.stroke();
+          ctx.restore();
+        }
+      });
+
+      // ---- DRAW CONSTELLATION LINES (sequential) ----
+      const linesElapsed = elapsed - DELAY_BEFORE_LINES;
+      if (linesElapsed > 0) {
+        segments.forEach((seg, idx) => {
+          const segStart = idx * SEG_DURATION;
+          const segEnd = segStart + SEG_DURATION;
+          if (linesElapsed < segStart) return; // not yet
+
+          // Progress of this specific segment [0..1]
+          let segProgress = Math.min(1, (linesElapsed - segStart) / SEG_DURATION);
+          // Eased
+          segProgress = segProgress < 0.5
+            ? 2 * segProgress * segProgress
+            : -1 + (4 - 2 * segProgress) * segProgress;
+
+          // Fade-in alpha: full opacity once drawn, slight glow
+          const lineAlpha = Math.min(0.55, 0.3 + segProgress * 0.25);
+
+          // Draw partial line from a → b
+          const tx = seg.a.x + (seg.b.x - seg.a.x) * segProgress;
+          const ty = seg.a.y + (seg.b.y - seg.a.y) * segProgress;
+
+          ctx.save();
+          ctx.globalAlpha = lineAlpha;
+          ctx.strokeStyle = 'rgba(180, 210, 255, 1)';
+          ctx.lineWidth = 0.9;
+          ctx.setLineDash([3, 5]);
+          ctx.lineDashOffset = -elapsed * 0.02; // subtle drift
+          ctx.beginPath();
+          ctx.moveTo(seg.a.x, seg.a.y);
+          ctx.lineTo(tx, ty);
+          ctx.stroke();
+
+          // Small dot at the leading edge
+          if (segProgress < 1) {
+            ctx.setLineDash([]);
+            ctx.beginPath();
+            ctx.arc(tx, ty, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(200, 225, 255, 0.9)';
+            ctx.fill();
+          }
+          ctx.restore();
+        });
+      }
+
+      constellationRAF = requestAnimationFrame(drawFrame);
+    }
+
+    constellationRAF = requestAnimationFrame(drawFrame);
+
+    // Store a stop function
+    canvas._stopConstellation = () => {
+      running = false;
+      if (constellationRAF) {
+        cancelAnimationFrame(constellationRAF);
+        constellationRAF = null;
+      }
+    };
+  });
 }
 
 /* ========== CONFETTI ========== */
