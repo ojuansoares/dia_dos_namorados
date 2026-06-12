@@ -28,6 +28,7 @@ function initAudio() {
 
   audio.addEventListener('loadedmetadata', () => {
     timeTotal.textContent = formatTime(audio.duration);
+    if (msgTimeTotal) msgTimeTotal.textContent = formatTime(audio.duration);
   });
 
   audio.addEventListener('timeupdate', () => {
@@ -36,6 +37,9 @@ function initAudio() {
       progressFill.style.width = pct + '%';
       progressThumb.style.left = pct + '%';
       timeCurrent.textContent = formatTime(audio.currentTime);
+      if (msgProgressFill) msgProgressFill.style.width = pct + '%';
+      if (msgProgressThumb) msgProgressThumb.style.left = pct + '%';
+      if (msgTimeCurrent) msgTimeCurrent.textContent = formatTime(audio.currentTime);
     }
   });
 
@@ -43,6 +47,7 @@ function initAudio() {
     isPlaying = false;
     btnPlay.innerHTML = '<svg viewBox="0 0 24 24" width="32" height="32"><path d="M8 5v14l11-7z"/></svg>';
     albumArt.classList.remove('playing');
+    if (msgBtnPlay) msgBtnPlay.innerHTML = '<svg viewBox="0 0 24 24" width="36" height="36"><path d="M8 5v14l11-7z"/></svg>';
   });
 
   audio.loop = false;
@@ -63,10 +68,12 @@ function togglePlay() {
     audio.pause();
     btnPlay.innerHTML = '<svg viewBox="0 0 24 24" width="32" height="32"><path d="M8 5v14l11-7z"/></svg>';
     albumArt.classList.remove('playing');
+    if (msgBtnPlay) msgBtnPlay.innerHTML = '<svg viewBox="0 0 24 24" width="36" height="36"><path d="M8 5v14l11-7z"/></svg>';
   } else {
     audio.play().catch(() => {});
     btnPlay.innerHTML = '<svg viewBox="0 0 24 24" width="32" height="32"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
     albumArt.classList.add('playing');
+    if (msgBtnPlay) msgBtnPlay.innerHTML = '<svg viewBox="0 0 24 24" width="36" height="36"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
   }
   isPlaying = !isPlaying;
 }
@@ -243,6 +250,7 @@ function openMessage() {
   savedScrollY = window.scrollY;
   mainContent.style.display = 'none';
   messageFullscreen.style.display = 'block';
+  messageFullscreen.scrollTop = 0;
   document.body.style.overflow = 'hidden';
 }
 
@@ -252,6 +260,70 @@ btnCloseMessage.addEventListener('click', () => {
   document.body.style.overflow = '';
   window.scrollTo(0, savedScrollY);
 });
+
+/* ========== MESSAGE FULLSCREEN PLAYER MIRROR ========== */
+const msgBtnPlay = $('#msgBtnPlay');
+const msgProgressBar = $('#msgProgressBar');
+const msgProgressFill = $('#msgProgressFill');
+const msgProgressThumb = $('#msgProgressThumb');
+const msgTimeCurrent = $('#msgTimeCurrent');
+const msgTimeTotal = $('#msgTimeTotal');
+
+msgBtnPlay.addEventListener('click', togglePlay);
+
+// Seek on msg progress bar
+let msgIsDragging = false;
+msgProgressBar.addEventListener('mousedown', startMsgSeek);
+msgProgressBar.addEventListener('touchstart', startMsgSeek, { passive: true });
+document.addEventListener('mousemove', moveMsgSeek);
+document.addEventListener('touchmove', moveMsgSeek, { passive: true });
+document.addEventListener('mouseup', endMsgSeek);
+document.addEventListener('touchend', endMsgSeek);
+
+function startMsgSeek(e) {
+  msgIsDragging = true;
+  updateMsgSeek(e);
+}
+function moveMsgSeek(e) {
+  if (msgIsDragging) updateMsgSeek(e);
+}
+function endMsgSeek() {
+  msgIsDragging = false;
+}
+function updateMsgSeek(e) {
+  if (!audio || !audio.duration) return;
+  const rect = msgProgressBar.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  let pct = (clientX - rect.left) / rect.width;
+  pct = Math.max(0, Math.min(1, pct));
+  audio.currentTime = pct * audio.duration;
+  progressFill.style.width = (pct * 100) + '%';
+  progressThumb.style.left = (pct * 100) + '%';
+  timeCurrent.textContent = formatTime(audio.currentTime);
+  msgProgressFill.style.width = (pct * 100) + '%';
+  msgProgressThumb.style.left = (pct * 100) + '%';
+  msgTimeCurrent.textContent = formatTime(audio.currentTime);
+}
+
+function openMessage() {
+  savedScrollY = window.scrollY;
+  mainContent.style.display = 'none';
+  messageFullscreen.style.display = 'block';
+  messageFullscreen.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  if (msgBtnPlay) {
+    msgBtnPlay.innerHTML = isPlaying
+      ? '<svg viewBox="0 0 24 24" width="36" height="36"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>'
+      : '<svg viewBox="0 0 24 24" width="36" height="36"><path d="M8 5v14l11-7z"/></svg>';
+  }
+  if (audio && audio.duration) {
+    const pct = (audio.currentTime / audio.duration) * 100;
+    msgProgressFill.style.width = pct + '%';
+    msgProgressThumb.style.left = pct + '%';
+    msgTimeCurrent.textContent = formatTime(audio.currentTime);
+    msgTimeTotal.textContent = formatTime(audio.duration);
+  }
+}
 
 /* ========== RETROSPECTIVA ========== */
 const retroOverlay = $('#retroOverlay');
@@ -266,23 +338,51 @@ btnOpenRetro.addEventListener('click', () => {
   const firstPage = $('#retroPage1');
   if (firstPage) firstPage.classList.add('active');
 
+  // Reset hours screen
+  hoursAnimDone = false;
+  const hr = $('#hoursResult');
+  if (hr) hr.classList.remove('show');
+  const hs = $('#hoursScroll');
+  if (hs) hs.innerHTML = '';
+  const nav1 = $('#navPage1');
+  if (nav1) nav1.classList.add('hidden');
+
+  // Reset cards
+  cardIndex = 0;
+  const nav2 = $('#navPage2');
+  if (nav2) nav2.classList.add('hidden');
+  // updateCards will be called after DOM is ready
+
   retroOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Reset animations for re-entry
-  hoursAnimDone = false;
+
   constellationInterval = null;
+  // Clean up previous confetti
+  if (confettiInterval) {
+    clearInterval(confettiInterval);
+    confettiInterval = null;
+  }
+  const confettiContainer = $('#confettiContainer');
+  if (confettiContainer) confettiContainer.innerHTML = '';
+
   setTimeout(() => {
     document.querySelectorAll('.hours-scroll-item, .star').forEach(el => el.remove());
     startHoursAnimation();
     initConstellation();
     initConfetti();
     createStars();
+    if (typeof updateCards === 'function') updateCards();
   }, 300);
 });
 
 function closeRetro() {
   retroOverlay.classList.remove('open');
   document.body.style.overflow = '';
+  // Hide navs that use overlay
+  const nav1 = $('#navPage1');
+  if (nav1) nav1.classList.add('hidden');
+  const nav2 = $('#navPage2');
+  if (nav2) nav2.classList.add('hidden');
   // Stop confetti
   if (confettiInterval) {
     clearInterval(confettiInterval);
@@ -321,74 +421,112 @@ function startHoursAnimation() {
   const hoursBig = $('#hoursBig');
   const totalHours = parseInt(hoursBig.textContent.replace(/\D/g, '')) || 0;
 
-  const colors = ['#1DB954', '#E13300', '#FFD700', '#FF69B4', '#00BFFF', '#9400D3', '#FF4500', '#00FF7F', '#FF1493', '#FFD700'];
-  const bgColors = ['rgba(29,185,84,0.12)', 'rgba(225,51,0,0.12)', 'rgba(255,215,0,0.12)', 'rgba(255,105,180,0.12)', 'rgba(0,191,255,0.12)', 'rgba(148,0,211,0.12)', 'rgba(255,69,0,0.12)', 'rgba(0,255,127,0.12)', 'rgba(255,20,147,0.12)', 'rgba(255,215,0,0.12)'];
-  const symbols = ['💚', '✨', '🌟', '💫', '⭐', '🔥', '💖', '🎵', '✨', '💚'];
+  const colors = [
+    { bg: '#1DB954', text: '#000' },
+    { bg: '#E13300', text: '#fff' },
+    { bg: '#FFD700', text: '#000' },
+    { bg: '#FF69B4', text: '#000' },
+    { bg: '#00BFFF', text: '#000' },
+    { bg: '#9400D3', text: '#fff' },
+    { bg: '#FF4500', text: '#fff' },
+    { bg: '#00FF7F', text: '#000' },
+    { bg: '#FF1493', text: '#fff' },
+    { bg: '#FFA500', text: '#000' },
+    { bg: '#7B68EE', text: '#fff' },
+    { bg: '#00FA9A', text: '#000' },
+    { bg: '#DC143C', text: '#fff' },
+    { bg: '#F0E68C', text: '#000' },
+    { bg: '#00CED1', text: '#000' },
+    { bg: '#FF6347', text: '#fff' },
+  ];
 
-  for (let i = 0; i < 10; i++) {
+  const inner = document.createElement('div');
+  inner.className = 'hours-scroll-inner';
+
+  const count = 15;
+  for (let i = 0; i < count; i++) {
     const item = document.createElement('div');
     item.className = 'hours-scroll-item';
-    const num = totalHours;
-    item.innerHTML = `<span style="display:block;font-size:16px;margin-bottom:8px">${symbols[i % symbols.length]}</span>${formatNumber(num)}`;
-    item.style.color = colors[i % colors.length];
-    item.style.textShadow = `0 0 30px ${colors[i % colors.length]}`;
-    item.style.background = bgColors[i % bgColors.length];
-    item.style.padding = '16px 40px';
-    item.style.borderRadius = '16px';
-    item.style.display = 'flex';
-    item.style.flexDirection = 'column';
-    item.style.alignItems = 'center';
-    item.style.justifyContent = 'center';
-    item.style.fontSize = '64px';
-    item.style.fontWeight = '900';
-    item.style.animationDelay = (i * 0.6) + 's';
-    scroll.appendChild(item);
+    item.textContent = formatNumber(totalHours);
+    const c = colors[i % colors.length];
+    item.style.background = c.bg;
+    item.style.color = c.text;
+    inner.appendChild(item);
   }
+
+  scroll.innerHTML = '';
+  scroll.appendChild(inner);
 
   setTimeout(() => {
     result.classList.add('show');
+    const nav1 = $('#navPage1');
+    if (nav1) nav1.classList.remove('hidden');
   }, 7000);
 }
 
 /* ========== CARDS CAROUSEL ========== */
 const cardTrack = $('#cardTrack');
+const cardTitle = $('#cardTitle');
+const cardDesc = $('#cardDesc');
 let cardIndex = 0;
 let cardStartX = 0;
 let cardIsDragging = false;
 let cardTranslateX = 0;
 
+const cardTexts = [
+  { title: 'Nosso começo', desc: 'O dia em que tudo começou' },
+  { title: 'Momentos especiais', desc: 'Cada instante guardado no coração' },
+  { title: 'Aventuras juntos', desc: 'Histórias que só nós temos' },
+  { title: 'Nosso amor', desc: 'Crescendo a cada dia' },
+  { title: 'Para sempre', desc: 'E que venham muitos mais' },
+];
+
 if (cardTrack) {
   const cards = cardTrack.querySelectorAll('.photo-card');
   const totalCards = cards.length;
 
+  function updateCardText() {
+    if (cardTitle && cardDesc && cardTexts[cardIndex]) {
+      cardTitle.classList.add('card-text-exit');
+      cardDesc.classList.add('card-text-exit');
+      setTimeout(() => {
+        cardTitle.textContent = cardTexts[cardIndex].title;
+        cardDesc.textContent = cardTexts[cardIndex].desc;
+        cardTitle.classList.remove('card-text-exit');
+        cardDesc.classList.remove('card-text-exit');
+      }, 200);
+    }
+  }
+
   function updateCards() {
-    const cardWidth = cards[0]?.offsetWidth || 260;
-    const gap = 12;
-    cardTrack.style.transform = `translateX(${-cardIndex * (cardWidth + gap)}px)`;
     cards.forEach((card, i) => {
-      card.classList.toggle('active-card', i === cardIndex);
+      const dist = i - cardIndex;
+      const isActive = dist === 0;
+      const absDist = Math.abs(dist);
+
+      card.style.zIndex = isActive ? 10 : 10 - absDist;
+      card.style.transform = isActive
+        ? 'scale(1) translateY(0) rotate(0deg)'
+        : `scale(0.9) translateX(${dist * 10}px) translateY(${absDist * 6}px) rotate(${dist * 1.5}deg)`;
+      card.style.opacity = isActive ? 1 : 0.5 - absDist * 0.12;
+      card.classList.toggle('active-card', isActive);
+      card.style.pointerEvents = isActive ? 'auto' : 'none';
     });
+    updateCardText();
+    const nav2 = $('#navPage2');
+    if (nav2) {
+      nav2.classList.toggle('hidden', cardIndex < totalCards - 1);
+    }
   }
 
   cardTrack.addEventListener('touchstart', (e) => {
-    cardStartX = e.touches[0].clientX;
     cardIsDragging = true;
-    const style = window.getComputedStyle(cardTrack);
-    const match = style.transform.match(/translateX\(([-\d.]+)px\)/);
-    cardTranslateX = match ? parseFloat(match[1]) : 0;
+    cardStartX = e.touches[0].clientX;
   }, { passive: true });
 
   cardTrack.addEventListener('touchmove', (e) => {
     if (!cardIsDragging) return;
-    e.preventDefault();
-    const diff = e.touches[0].clientX - cardStartX;
-    const cardWidth = cards[0]?.offsetWidth || 260;
-    const gap = 12;
-    const maxTranslate = -(totalCards - 1) * (cardWidth + gap);
-    let newTranslate = cardTranslateX + diff;
-    newTranslate = Math.max(maxTranslate, Math.min(0, newTranslate));
-    cardTrack.style.transform = `translateX(${newTranslate}px)`;
-  }, { passive: false });
+  }, { passive: true });
 
   cardTrack.addEventListener('touchend', (e) => {
     cardIsDragging = false;
@@ -440,63 +578,49 @@ function initConstellation() {
   canvas.height = size;
 
   const stars = [];
-  const numStars = 45;
+  const numStars = 30;
   const constellations = [
-    [0, 1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9, 10],
-    [11, 12, 13],
-    [14, 15, 16, 17],
-    [18, 19, 20],
-    [21, 22, 23],
-    [24, 25, 26, 27],
+    [0, 1, 2],
+    [3, 4, 5, 6],
+    [7, 8],
   ];
 
   for (let i = 0; i < numStars; i++) {
     stars.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      r: Math.random() * 2.5 + 0.8,
+      r: Math.random() * 3.5 + 1.2,
       alpha: Math.random() * 0.8 + 0.2,
       speed: Math.random() * 0.02 + 0.005,
       phase: Math.random() * Math.PI * 2,
     });
   }
 
+  let lineProgress = 0;
+  const startTime = Date.now();
+  const ANIM_DURATION = 4000;
+
   function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw constellation lines
-    ctx.strokeStyle = 'rgba(29, 185, 84, 0.25)';
-    ctx.lineWidth = 1;
-    constellations.forEach(group => {
-      for (let i = 0; i < group.length - 1; i++) {
-        const a = stars[group[i]];
-        const b = stars[group[i + 1]];
-        if (a && b) {
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-        }
-      }
-    });
+    lineProgress = Math.min(1, (Date.now() - startTime) / ANIM_DURATION);
 
-    // Draw connecting lines between close stars
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-    ctx.lineWidth = 0.5;
-    for (let i = 0; i < stars.length; i++) {
-      for (let j = i + 1; j < stars.length; j++) {
-        const dx = stars[i].x - stars[j].x;
-        const dy = stars[i].y - stars[j].y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 50) {
-          ctx.beginPath();
-          ctx.moveTo(stars[i].x, stars[i].y);
-          ctx.lineTo(stars[j].x, stars[j].y);
-          ctx.stroke();
+    // Draw constellation lines (animate in slowly)
+    if (lineProgress > 0) {
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 * lineProgress})`;
+      ctx.lineWidth = 1;
+      constellations.forEach(group => {
+        for (let i = 0; i < group.length - 1; i++) {
+          const a = stars[group[i]];
+          const b = stars[group[i + 1]];
+          if (a && b) {
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
         }
-      }
+      });
     }
 
     // Draw stars
