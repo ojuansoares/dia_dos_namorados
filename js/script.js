@@ -349,8 +349,8 @@ btnOpenRetro.addEventListener('click', () => {
 
   // Reset cards
   cardIndex = 0;
-  const nav2 = $('#navPage2');
-  if (nav2) nav2.classList.add('hidden');
+  const nav3 = $('#navPage3');
+  if (nav3) nav3.classList.add('hidden');
   // updateCards will be called after DOM is ready
 
   retroOverlay.classList.add('open');
@@ -395,8 +395,8 @@ function closeRetro() {
   // Hide navs that use overlay
   const nav1 = $('#navPage1');
   if (nav1) nav1.classList.add('hidden');
-  const nav2 = $('#navPage2');
-  if (nav2) nav2.classList.add('hidden');
+  const nav3 = $('#navPage3');
+  if (nav3) nav3.classList.add('hidden');
   // Stop constellation RAF
   if (constellationRAF) {
     cancelAnimationFrame(constellationRAF);
@@ -541,9 +541,9 @@ if (cardTrack) {
       card.style.pointerEvents = isActive ? 'auto' : 'none';
     });
     updateCardText();
-    const nav2 = $('#navPage2');
-    if (nav2) {
-      nav2.classList.toggle('hidden', cardIndex < totalCards - 1);
+    const nav3 = $('#navPage3');
+    if (nav3) {
+      nav3.classList.toggle('hidden', cardIndex < totalCards - 1);
     }
   }
 
