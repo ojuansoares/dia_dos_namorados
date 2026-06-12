@@ -382,7 +382,6 @@ btnOpenRetro.addEventListener('click', () => {
   setTimeout(() => {
     document.querySelectorAll('.hours-scroll-item, .star').forEach(el => el.remove());
     startHoursAnimation();
-    initConstellation();
     initConfetti();
     createStars();
     if (typeof updateCards === 'function') updateCards();
@@ -432,6 +431,10 @@ $$('.btn-next-session').forEach(btn => {
       current.classList.remove('active');
       next.classList.add('active');
       next.scrollTop = 0;
+      
+      if (nextId === 'retroPage5') {
+        initConstellation();
+      }
     }
   });
 });
