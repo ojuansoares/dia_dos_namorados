@@ -592,7 +592,7 @@ function createStars() {
 
 /* ========== CONSTELLATION ========== */
 let constellationRAF = null;
-let constellationInterval = null; // kept for reset compat
+let constellationInterval = null; 
 
 function initConstellation() {
   const canvas = $('#constellationCanvas');
@@ -609,13 +609,20 @@ function initConstellation() {
     const w = container.offsetWidth || 320;
     const h = container.offsetHeight || 320;
     const size = Math.max(w, h, 300);
-    canvas.width = size;
-    canvas.height = size;
+    
+    // Suporte a High-DPI / Retina displays para manter a nitidez cristalina
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
 
     const ctx = canvas.getContext('2d');
-    const s = size; // alias
+    ctx.scale(dpr, dpr);
+    const s = size; 
 
     function rng(min, max) { return Math.random() * (max - min) + min; }
+    
     function makeStarColor() {
       const r = Math.random();
       if (r < 0.7) return { r: 255, g: 255, b: 255 };
@@ -624,60 +631,46 @@ function initConstellation() {
       return { r: 220, g: 200, b: 255 };
     }
 
-    // ---- PEIXES (Pisces) - lado esquerdo [x: 0.02..0.46] ----
-    // Dois peixes em anéis, ligados por uma corda
+    // ---- PEIXES (Pisces) - Movida para a Direita (+0.15) e para Baixo (+0.10) ----
     const pNorm = [
-      { x: 0.09, y: 0.24 }, // 0 peixe sup topo
-      { x: 0.16, y: 0.20 }, // 1
-      { x: 0.23, y: 0.26 }, // 2
-      { x: 0.18, y: 0.34 }, // 3
-      { x: 0.09, y: 0.30 }, // 4 fecha anel sup
-      { x: 0.14, y: 0.43 }, // 5 nó da corda
-      { x: 0.18, y: 0.53 }, // 6 peixe inf topo
-      { x: 0.26, y: 0.58 }, // 7
-      { x: 0.22, y: 0.67 }, // 8
-      { x: 0.13, y: 0.64 }, // 9
-      { x: 0.10, y: 0.55 }, // 10 fecha anel inf
+      { x: 0.24, y: 0.34 }, // 0 peixe sup topo
+      { x: 0.31, y: 0.30 }, // 1
+      { x: 0.38, y: 0.36 }, // 2
+      { x: 0.33, y: 0.44 }, // 3
+      { x: 0.24, y: 0.40 }, // 4 fecha anel sup
+      { x: 0.29, y: 0.53 }, // 5 nó da corda
+      { x: 0.33, y: 0.63 }, // 6 peixe inf topo
+      { x: 0.41, y: 0.68 }, // 7
+      { x: 0.37, y: 0.77 }, // 8
+      { x: 0.28, y: 0.74 }, // 9
+      { x: 0.25, y: 0.65 }, // 10 fecha anel inf
     ];
     const pEdges = [
-      [0,1],[1,2],[2,3],[3,4],[4,0], // anel sup
-      [3,5],[5,6],                    // corda
-      [6,7],[7,8],[8,9],[9,10],[10,6] // anel inf
+      [0,1],[1,2],[2,3],[3,4],[4,0], 
+      [3,5],[5,6],                    
+      [6,7],[7,8],[8,9],[9,10],[10,6] 
     ];
 
-    // ---- GÊMEOS (Gemini) - lado direito [x: 0.54..0.98] ----
-    // Dois humanóides lado a lado (Castor e Pollux)
+    // ---- GÊMEOS (Gemini) - Lado direito ----
     const gNorm = [
-      // Castor (esquerdo)
-      { x: 0.58, y: 0.15 }, // 0 cabeça
-      { x: 0.58, y: 0.27 }, // 1 ombros
-      { x: 0.52, y: 0.34 }, // 2 ombro esq
-      { x: 0.64, y: 0.34 }, // 3 ombro dir
-      { x: 0.58, y: 0.47 }, // 4 cintura
-      { x: 0.54, y: 0.61 }, // 5 joelho esq
-      { x: 0.62, y: 0.61 }, // 6 joelho dir
-      // Pollux (direito)
-      { x: 0.76, y: 0.18 }, // 7 cabeça
-      { x: 0.76, y: 0.30 }, // 8 ombros
-      { x: 0.70, y: 0.37 }, // 9 ombro esq
-      { x: 0.82, y: 0.37 }, // 10 ombro dir
-      { x: 0.76, y: 0.50 }, // 11 cintura
-      { x: 0.72, y: 0.64 }, // 12 joelho esq
-      { x: 0.80, y: 0.64 }, // 13 joelho dir
+      { x: 0.58, y: 0.15 }, { x: 0.58, y: 0.27 }, { x: 0.52, y: 0.34 },
+      { x: 0.64, y: 0.34 }, { x: 0.58, y: 0.47 }, { x: 0.54, y: 0.61 },
+      { x: 0.62, y: 0.61 }, { x: 0.76, y: 0.18 }, { x: 0.76, y: 0.30 },
+      { x: 0.70, y: 0.37 }, { x: 0.82, y: 0.37 }, { x: 0.76, y: 0.50 },
+      { x: 0.72, y: 0.64 }, { x: 0.80, y: 0.64 },
     ];
     const gEdges = [
-      [0,1],[1,2],[1,3],[1,4],[4,5],[4,6], // Castor
-      [7,8],[8,9],[8,10],[8,11],[11,12],[11,13], // Pollux
-      [3,9] // braços se tocando
+      [0,1],[1,2],[1,3],[1,4],[4,5],[4,6], 
+      [7,8],[8,9],[8,10],[8,11],[11,12],[11,13], 
+      [3,9] 
     ];
 
-    // Converte normalizado → pixels
     function makeStars(norm, bigR) {
       return norm.map(p => ({
         x: p.x * s, y: p.y * s,
-        r: bigR ? rng(1.8, 3.0) : rng(1.4, 2.2),
-        baseAlpha: rng(0.75, 1.0),
-        twinkleSpeed: rng(0.3, 0.9),
+        r: bigR ? rng(2.0, 3.5) : rng(1.5, 2.5),
+        baseAlpha: rng(0.8, 1.0),
+        twinkleSpeed: rng(0.4, 0.9),
         twinklePhase: rng(0, Math.PI * 2),
         color: makeStarColor(),
       }));
@@ -686,57 +679,72 @@ function initConstellation() {
     const piscesStars = makeStars(pNorm, false);
     const geminiStars = makeStars(gNorm, true);
 
-    // Estrelas de fundo aleatórias
+    // CÉU ESTRELADO PROFUNDO (Mantido lindo e denso ao fundo)
     const bgStars = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 220; i++) { 
+      const isFaint = Math.random() > 0.25; 
       bgStars.push({
-        x: rng(0.02, 0.98) * s, y: rng(0.02, 0.98) * s,
-        r: rng(0.4, 1.3),
-        baseAlpha: rng(0.12, 0.45),
-        twinkleSpeed: rng(0.3, 1.2),
+        x: rng(0.01, 0.99) * s, 
+        y: rng(0.01, 0.99) * s,
+        r: isFaint ? rng(0.2, 0.7) : rng(0.8, 1.4),
+        baseAlpha: isFaint ? rng(0.05, 0.25) : rng(0.3, 0.7),
+        twinkleSpeed: isFaint ? rng(0.1, 0.5) : rng(0.5, 1.2),
         twinklePhase: rng(0, Math.PI * 2),
         color: makeStarColor(),
       });
     }
 
-    const allStars = [...bgStars, ...piscesStars, ...geminiStars];
-
     function buildSegs(stars, edges) {
       return edges.map(([ai, bi]) => ({ a: stars[ai], b: stars[bi] })).filter(seg => seg.a && seg.b);
     }
 
-    // Paths paralelos: Peixes e Gêmeos animam ao mesmo tempo
     const paths = [
       buildSegs(piscesStars, pEdges),
       buildSegs(geminiStars, gEdges),
     ];
 
-    const DELAY_BEFORE_LINES = 1500;
-    const SEG_DURATION = 900;
+    // Tempo de transição e desenho cadenciado confortável
+    const DELAY_BEFORE_LINES = 800; 
+    const SEG_DURATION = 400;       
     let startTime = null;
     let running = true;
 
+    // Centros volumétricos calculados para rotacionar/inclinar no próprio eixo
+    const piscesCenter = { x: 0.33 * s, y: 0.54 * s };
+    const geminiCenter = { x: 0.67 * s, y: 0.40 * s };
+
     function drawStar(star, now) {
       const twinkle = 0.5 + 0.5 * Math.sin(now * star.twinkleSpeed + star.twinklePhase);
-      const alpha = star.baseAlpha * (0.55 + 0.45 * twinkle);
+      const alpha = star.baseAlpha * (0.6 + 0.4 * twinkle);
       const { r, g, b } = star.color;
-      const glowR = star.r * 4.5;
-      const grd = ctx.createRadialGradient(star.x, star.y, 0, star.x, star.y, glowR);
-      grd.addColorStop(0, `rgba(${r},${g},${b},${alpha * 0.35})`);
-      grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
-      ctx.beginPath(); ctx.arc(star.x, star.y, glowR, 0, Math.PI * 2);
-      ctx.fillStyle = grd; ctx.fill();
+      
+      ctx.save();
+      
+      // OTIMIZAÇÃO PRO: Usar shadowBlur acelerado por hardware no lugar de radialGradients iterativos
+      if (star.r > 0.8) {
+        ctx.shadowBlur = star.r * 4.0;
+        ctx.shadowColor = `rgba(${r},${g},${b},${alpha * 0.6})`;
+      } else {
+        ctx.shadowBlur = 0;
+      }
+
       ctx.beginPath(); ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`; ctx.fill();
-      if (star.r > 2) {
+
+      // Desativa a sombra antes de renderizar os feixes cruzados para não borrar as pontas
+      ctx.shadowBlur = 0;
+
+      if (star.r > 1.5) {
         const sparkLen = star.r * 3.5 * (0.7 + 0.3 * twinkle);
-        ctx.save(); ctx.globalAlpha = alpha * 0.5;
-        ctx.strokeStyle = `rgb(${r},${g},${b})`; ctx.lineWidth = 0.8;
+        ctx.globalAlpha = alpha * 0.5;
+        ctx.strokeStyle = `rgb(${r},${g},${b})`; 
+        ctx.lineWidth = 1.0; 
         ctx.beginPath();
         ctx.moveTo(star.x - sparkLen, star.y); ctx.lineTo(star.x + sparkLen, star.y);
         ctx.moveTo(star.x, star.y - sparkLen); ctx.lineTo(star.x, star.y + sparkLen);
-        ctx.stroke(); ctx.restore();
+        ctx.stroke();
       }
+      ctx.restore();
     }
 
     function drawFrame(timestamp) {
@@ -746,31 +754,71 @@ function initConstellation() {
       const now = timestamp / 1000;
 
       ctx.clearRect(0, 0, s, s);
-      allStars.forEach(star => drawStar(star, now));
+      
+      // 1. Desenha o fundo estrelado estático (sem inclinação para manter o realismo do céu)
+      bgStars.forEach(star => drawStar(star, now));
 
       const linesElapsed = elapsed - DELAY_BEFORE_LINES;
+
+      // 2. Renderiza PEIXES com inclinação de +15 graus (0.26 rad)
+      ctx.save();
+      ctx.translate(piscesCenter.x, piscesCenter.y);
+      ctx.rotate(0.26); 
+      ctx.translate(-piscesCenter.x, -piscesCenter.y);
+      
+      piscesStars.forEach(star => drawStar(star, now));
       if (linesElapsed > 0) {
-        paths.forEach(segments => {
-          segments.forEach((seg, idx) => {
-            const segStart = idx * SEG_DURATION;
-            if (linesElapsed < segStart) return;
-            let p = Math.min(1, (linesElapsed - segStart) / SEG_DURATION);
-            p = p < 0.5 ? 2*p*p : -1 + (4 - 2*p) * p;
-            const tx = seg.a.x + (seg.b.x - seg.a.x) * p;
-            const ty = seg.a.y + (seg.b.y - seg.a.y) * p;
-            ctx.save();
-            ctx.globalAlpha = Math.min(0.65, 0.15 + p * 0.5);
-            ctx.strokeStyle = 'rgba(200, 230, 255, 0.85)';
-            ctx.lineWidth = 0.7;
-            ctx.beginPath(); ctx.moveTo(seg.a.x, seg.a.y); ctx.lineTo(tx, ty); ctx.stroke();
-            if (p < 1 && p > 0.05) {
-              ctx.beginPath(); ctx.arc(tx, ty, 1.2, 0, Math.PI * 2);
-              ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fill();
-            }
-            ctx.restore();
-          });
+        paths[0].forEach((seg, idx) => {
+          const segStart = idx * SEG_DURATION;
+          if (linesElapsed < segStart) return;
+          let p = Math.min(1, (linesElapsed - segStart) / SEG_DURATION);
+          p = p < 0.5 ? 2*p*p : -1 + (4 - 2*p) * p;
+          const tx = seg.a.x + (seg.b.x - seg.a.x) * p;
+          const ty = seg.a.y + (seg.b.y - seg.a.y) * p;
+          
+          ctx.save();
+          ctx.shadowBlur = 5; ctx.shadowColor = 'rgba(173, 216, 230, 0.7)';
+          ctx.globalAlpha = Math.min(0.8, 0.2 + p * 0.6);
+          ctx.strokeStyle = 'rgba(215, 238, 255, 0.9)'; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.moveTo(seg.a.x, seg.a.y); ctx.lineTo(tx, ty); ctx.stroke();
+          if (p < 1 && p > 0.05) {
+            ctx.beginPath(); ctx.arc(tx, ty, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,1)'; ctx.fill();
+          }
+          ctx.restore();
         });
       }
+      ctx.restore();
+
+      // 3. Renderiza GÊMEOS com inclinação oposta de -12 graus (-0.21 rad) para harmonizar o layout
+      ctx.save();
+      ctx.translate(geminiCenter.x, geminiCenter.y);
+      ctx.rotate(-0.21); 
+      ctx.translate(-geminiCenter.x, -geminiCenter.y);
+      
+      geminiStars.forEach(star => drawStar(star, now));
+      if (linesElapsed > 0) {
+        paths[1].forEach((seg, idx) => {
+          const segStart = idx * SEG_DURATION;
+          if (linesElapsed < segStart) return;
+          let p = Math.min(1, (linesElapsed - segStart) / SEG_DURATION);
+          p = p < 0.5 ? 2*p*p : -1 + (4 - 2*p) * p;
+          const tx = seg.a.x + (seg.b.x - seg.a.x) * p;
+          const ty = seg.a.y + (seg.b.y - seg.a.y) * p;
+          
+          ctx.save();
+          ctx.shadowBlur = 5; ctx.shadowColor = 'rgba(173, 216, 230, 0.7)';
+          ctx.globalAlpha = Math.min(0.8, 0.2 + p * 0.6);
+          ctx.strokeStyle = 'rgba(215, 238, 255, 0.9)'; ctx.lineWidth = 1.2;
+          ctx.beginPath(); ctx.moveTo(seg.a.x, seg.a.y); ctx.lineTo(tx, ty); ctx.stroke();
+          if (p < 1 && p > 0.05) {
+            ctx.beginPath(); ctx.arc(tx, ty, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,1)'; ctx.fill();
+          }
+          ctx.restore();
+        });
+      }
+      ctx.restore();
 
       constellationRAF = requestAnimationFrame(drawFrame);
     }
@@ -865,7 +913,3 @@ function triggerHoursConfetti() {
     }
   }, 5000);
 }
-
-// Init countdown
-updateCountdown();
-setInterval(updateCountdown, 1000);
