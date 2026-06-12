@@ -364,6 +364,12 @@ btnOpenRetro.addEventListener('click', () => {
   }
   const confettiContainer = $('#confettiContainer');
   if (confettiContainer) confettiContainer.innerHTML = '';
+  if (hoursConfettiInterval) {
+    clearInterval(hoursConfettiInterval);
+    hoursConfettiInterval = null;
+  }
+  const hoursConfetti = $('#hoursConfetti');
+  if (hoursConfetti) hoursConfetti.innerHTML = '';
 
   setTimeout(() => {
     document.querySelectorAll('.hours-scroll-item, .star').forEach(el => el.remove());
@@ -390,6 +396,12 @@ function closeRetro() {
   }
   const confettiContainer = $('#confettiContainer');
   if (confettiContainer) confettiContainer.innerHTML = '';
+  if (hoursConfettiInterval) {
+    clearInterval(hoursConfettiInterval);
+    hoursConfettiInterval = null;
+  }
+  const hoursConfetti = $('#hoursConfetti');
+  if (hoursConfetti) hoursConfetti.innerHTML = '';
 }
 
 btnCloseRetro.addEventListener('click', closeRetro);
@@ -461,6 +473,7 @@ function startHoursAnimation() {
     result.classList.add('show');
     const nav1 = $('#navPage1');
     if (nav1) nav1.classList.remove('hidden');
+    triggerHoursConfetti();
   }, 7000);
 }
 
@@ -687,6 +700,45 @@ function initConfetti() {
     if (confettiInterval) {
       clearInterval(confettiInterval);
       confettiInterval = null;
+    }
+  }, 5000);
+}
+
+let hoursConfettiInterval = null;
+
+function triggerHoursConfetti() {
+  const container = document.getElementById('hoursConfetti');
+  if (!container) return;
+  if (hoursConfettiInterval) {
+    clearInterval(hoursConfettiInterval);
+    hoursConfettiInterval = null;
+  }
+  container.innerHTML = '';
+
+  const colors = ['#1DB954', '#FFD700', '#FF69B4', '#00BFFF', '#FF4500', '#9400D3', '#FF1493', '#00FF7F'];
+
+  function createPiece() {
+    for (let i = 0; i < 3; i++) {
+      const piece = document.createElement('div');
+      piece.className = 'confetti-piece';
+      piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+      piece.style.left = Math.random() * 100 + '%';
+      piece.style.width = (Math.random() * 6 + 4) + 'px';
+      piece.style.height = (Math.random() * 6 + 4) + 'px';
+      piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      piece.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      container.appendChild(piece);
+      setTimeout(() => piece.remove(), 5000);
+    }
+  }
+
+  hoursConfettiInterval = setInterval(createPiece, 200);
+  for (let i = 0; i < 10; i++) setTimeout(createPiece, i * 100);
+
+  setTimeout(() => {
+    if (hoursConfettiInterval) {
+      clearInterval(hoursConfettiInterval);
+      hoursConfettiInterval = null;
     }
   }, 5000);
 }
