@@ -658,21 +658,21 @@ function initConstellation() {
     ];
 
     // ---- ANIMATION STATE ----
-    const DELAY_BEFORE_LINES = 2000;   // ms before lines start appearing
-    const SEG_DURATION = 1800;         // ms to draw each line segment
+    const DELAY_BEFORE_LINES = 1500;   // ms before lines start appearing
+    const SEG_DURATION = 1000;         // ms to draw each line segment
     let startTime = null;
     let running = true;
 
-    // Precompute all segments in order
-    const segments = [];
-    constellations.forEach(group => {
+    // Precompute segments into 2 parallel paths
+    const paths = [[], []];
+    constellations.forEach((group, index) => {
+      const pathIdx = index % 2; // Split into 2 paths
       for (let i = 0; i < group.length - 1; i++) {
         const a = stars[group[i] % numStars];
         const b = stars[group[i + 1] % numStars];
-        if (a && b) segments.push({ a, b });
+        if (a && b) paths[pathIdx].push({ a, b });
       }
     });
-    const totalSegDuration = segments.length * SEG_DURATION;
 
     function drawFrame(timestamp) {
       if (!running) return;
@@ -722,46 +722,48 @@ function initConstellation() {
         }
       });
 
-      // ---- DRAW CONSTELLATION LINES (sequential) ----
+      // ---- DRAW CONSTELLATION LINES (parallel paths) ----
       const linesElapsed = elapsed - DELAY_BEFORE_LINES;
       
       if (linesElapsed > 0) {
-        segments.forEach((seg, idx) => {
-          const segStart = idx * SEG_DURATION;
-          const segEnd = segStart + SEG_DURATION;
-          if (linesElapsed < segStart) return; // not yet
+        paths.forEach(segments => {
+          segments.forEach((seg, idx) => {
+            const segStart = idx * SEG_DURATION;
+            const segEnd = segStart + SEG_DURATION;
+            if (linesElapsed < segStart) return; // not yet
 
-          // Progress of this specific segment [0..1]
-          let segProgress = Math.min(1, (linesElapsed - segStart) / SEG_DURATION);
-          // Eased
-          segProgress = segProgress < 0.5
-            ? 2 * segProgress * segProgress
-            : -1 + (4 - 2 * segProgress) * segProgress;
+            // Progress of this specific segment [0..1]
+            let segProgress = Math.min(1, (linesElapsed - segStart) / SEG_DURATION);
+            // Eased
+            segProgress = segProgress < 0.5
+              ? 2 * segProgress * segProgress
+              : -1 + (4 - 2 * segProgress) * segProgress;
 
-          // Fade-in alpha: full opacity once drawn, slight glow
-          const lineAlpha = Math.min(0.7, 0.2 + segProgress * 0.5);
+            // Fade-in alpha: full opacity once drawn, slight glow
+            const lineAlpha = Math.min(0.7, 0.2 + segProgress * 0.5);
 
-          // Draw partial line from a → b
-          const tx = seg.a.x + (seg.b.x - seg.a.x) * segProgress;
-          const ty = seg.a.y + (seg.b.y - seg.a.y) * segProgress;
+            // Draw partial line from a → b
+            const tx = seg.a.x + (seg.b.x - seg.a.x) * segProgress;
+            const ty = seg.a.y + (seg.b.y - seg.a.y) * segProgress;
 
-          ctx.save();
-          ctx.globalAlpha = lineAlpha;
-          ctx.strokeStyle = 'rgba(200, 230, 255, 0.8)'; // Cor suave
-          ctx.lineWidth = 0.6; // Linha fina
-          ctx.beginPath();
-          ctx.moveTo(seg.a.x, seg.a.y);
-          ctx.lineTo(tx, ty);
-          ctx.stroke();
-
-          // Small glow at the leading edge
-          if (segProgress < 1 && segProgress > 0.05) {
+            ctx.save();
+            ctx.globalAlpha = lineAlpha;
+            ctx.strokeStyle = 'rgba(200, 230, 255, 0.8)'; // Cor suave
+            ctx.lineWidth = 0.6; // Linha fina
             ctx.beginPath();
-            ctx.arc(tx, ty, 1.0, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-            ctx.fill();
-          }
-          ctx.restore();
+            ctx.moveTo(seg.a.x, seg.a.y);
+            ctx.lineTo(tx, ty);
+            ctx.stroke();
+
+            // Small glow at the leading edge
+            if (segProgress < 1 && segProgress > 0.05) {
+              ctx.beginPath();
+              ctx.arc(tx, ty, 1.0, 0, Math.PI * 2);
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+              ctx.fill();
+            }
+            ctx.restore();
+          });
         });
       }
 
