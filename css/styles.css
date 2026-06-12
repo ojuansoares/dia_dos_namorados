@@ -1071,7 +1071,7 @@ button {
   display: block;
 }
 
-#retroPage1, #retroPage3, #retroPage5 {
+#retroPage1, #retroPage2, #retroPage3, #retroPage5 {
   overflow-y: hidden;
 }
 
@@ -1272,7 +1272,11 @@ button {
 }
 
 #retroPage2 .retro-nav {
-  background: linear-gradient(transparent 0%, rgba(18,18,18,0.85) 30%, #121212 60%);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent 0%, rgba(18,18,18,0.8) 30%, #121212 80%);
 }
 
 .retro-genre {
@@ -1280,10 +1284,11 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  height: 100%;
+  width: 100%;
   position: relative;
   overflow: hidden;
-  flex: 1 0 auto;
+  flex: 1;
 }
 
 .genre-bg {
