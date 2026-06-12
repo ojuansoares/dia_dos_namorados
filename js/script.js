@@ -655,8 +655,8 @@ function initConstellation() {
     ];
 
     // ---- ANIMATION STATE ----
-    const DELAY_BEFORE_LINES = 1200;   // ms before lines start appearing
-    const SEG_DURATION = 900;          // ms to draw each line segment
+    const DELAY_BEFORE_LINES = 2000;   // ms before lines start appearing
+    const SEG_DURATION = 1800;         // ms to draw each line segment
     let startTime = null;
     let running = true;
 
@@ -721,6 +721,7 @@ function initConstellation() {
 
       // ---- DRAW CONSTELLATION LINES (sequential) ----
       const linesElapsed = elapsed - DELAY_BEFORE_LINES;
+      
       if (linesElapsed > 0) {
         segments.forEach((seg, idx) => {
           const segStart = idx * SEG_DURATION;
@@ -735,7 +736,7 @@ function initConstellation() {
             : -1 + (4 - 2 * segProgress) * segProgress;
 
           // Fade-in alpha: full opacity once drawn, slight glow
-          const lineAlpha = Math.min(0.55, 0.3 + segProgress * 0.25);
+          const lineAlpha = Math.min(0.7, 0.2 + segProgress * 0.5);
 
           // Draw partial line from a → b
           const tx = seg.a.x + (seg.b.x - seg.a.x) * segProgress;
@@ -743,21 +744,18 @@ function initConstellation() {
 
           ctx.save();
           ctx.globalAlpha = lineAlpha;
-          ctx.strokeStyle = 'rgba(180, 210, 255, 1)';
-          ctx.lineWidth = 0.9;
-          ctx.setLineDash([3, 5]);
-          ctx.lineDashOffset = -elapsed * 0.02; // subtle drift
+          ctx.strokeStyle = 'rgba(200, 230, 255, 0.8)'; // Cor suave
+          ctx.lineWidth = 0.6; // Linha fina
           ctx.beginPath();
           ctx.moveTo(seg.a.x, seg.a.y);
           ctx.lineTo(tx, ty);
           ctx.stroke();
 
-          // Small dot at the leading edge
-          if (segProgress < 1) {
-            ctx.setLineDash([]);
+          // Small glow at the leading edge
+          if (segProgress < 1 && segProgress > 0.05) {
             ctx.beginPath();
-            ctx.arc(tx, ty, 1.5, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(200, 225, 255, 0.9)';
+            ctx.arc(tx, ty, 1.0, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
             ctx.fill();
           }
           ctx.restore();

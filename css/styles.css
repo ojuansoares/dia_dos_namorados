@@ -512,7 +512,7 @@ button {
 
 .about-card {
   max-width: 380px;
-  margin: 6px auto;
+  margin: 0 auto 20px;
   background: var(--bg-card);
   border-radius: 16px;
   overflow: hidden;
@@ -628,7 +628,7 @@ button {
 .message-preview {
   position: relative;
   max-width: 380px;
-  margin: 6px auto;
+  margin: 0 auto 20px;
   height: 360px;
   overflow: hidden;
   background: #4a3728;
@@ -892,13 +892,13 @@ button {
 /* ========== TOP MOMENTOS ========== */
 .top-moments-section {
   padding-top: 0;
-  padding-bottom: 32px;
+  padding-bottom: 0;
   min-height: auto;
 }
 
 .top-moments-container {
   max-width: 380px;
-  margin: 0 auto;
+  margin: 0 auto 20px;
   background: var(--bg-card);
   border-radius: 16px;
   padding: 24px 20px;
@@ -995,7 +995,7 @@ button {
 
 .retro-card {
   max-width: 380px;
-  margin: 6px auto 24px;
+  margin: 0 auto 40px;
   background: linear-gradient(135deg, #1a1a2e 0%, var(--bg-card) 100%);
   border-radius: 16px;
   padding: 48px 32px;
@@ -1267,15 +1267,23 @@ button {
 }
 
 /* ========== RETRO PAGE 2: GENRE ========== */
+#retroPage2 {
+  background: #121212;
+}
+
+#retroPage2 .retro-nav {
+  background: linear-gradient(transparent 0%, rgba(18,18,18,0.85) 30%, #121212 60%);
+}
+
 .retro-genre {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: #121212;
+  flex: 1 0 auto;
 }
 
 .genre-bg {
