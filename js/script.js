@@ -508,11 +508,11 @@ let cardIsDragging = false;
 let cardTranslateX = 0;
 
 const cardTexts = [
-  { title: 'Nosso começo', desc: 'O dia em que tudo começou' },
-  { title: 'Momentos especiais', desc: 'Cada instante guardado no coração' },
-  { title: 'Aventuras juntos', desc: 'Histórias que só nós temos' },
-  { title: 'Nosso amor', desc: 'Crescendo a cada dia' },
-  { title: 'Para sempre', desc: 'E que venham muitos mais' },
+  { title: 'Nosso começo', desc: 'O dia em que tudo começou. Nem esperavamos que poderiamos nos tornar o que somos hoje.. que coisa.' },
+  { title: 'Primeiro dia como Namorados', desc: 'Que dia marcante! todo mundo feliz pela gente, e nós super felizes em estarmos começando uma vida juntos!' },
+  { title: 'Primeira ida ao shopping sozinhos', desc: 'Um dos dias mais marcantes, da gente como dois adolescentes no início de tudo.. tão bom lembrar!' },
+  { title: 'O Progresso', desc: 'Começando a construir nossa vida juntos, preparando nosso Temporário Lar. Foi um ano absurdo de incrível.' },
+  { title: 'Para sempre', desc: 'A partir deste dia.. quero ser sempre seu!' },
 ];
 
 if (cardTrack) {
@@ -541,8 +541,8 @@ if (cardTrack) {
       card.style.zIndex = isActive ? 10 : 10 - absDist;
       card.style.transform = isActive
         ? 'scale(1) translateY(0) rotate(0deg)'
-        : `scale(0.9) translateX(${dist * 10}px) translateY(${absDist * 6}px) rotate(${dist * 1.5}deg)`;
-      card.style.opacity = isActive ? 1 : 0.5 - absDist * 0.12;
+        : `scale(0.85) translateX(${dist * 22}px) translateY(${absDist * 6}px) rotate(${dist * 2}deg)`;
+      card.style.opacity = isActive ? 1 : 0.55 - absDist * 0.1;
       card.classList.toggle('active-card', isActive);
       card.style.pointerEvents = isActive ? 'auto' : 'none';
     });
