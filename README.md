@@ -88,13 +88,4 @@ npx vercel --prod
 
 ---
 
-## Em Andamento
-
-- [ ] Adicionar funcionalidade de **compartilhar** via WhatsApp
-- [ ] **Modo escuro** aprimorado com temas sazonais
-- [ ] **Efeitos sonoros** ao navegar na retrospectiva
-- [ ] **Modo presente** com data futura programável
-
----
-
 Feito por [Juan Soares](https://github.com/ojuansoares)
