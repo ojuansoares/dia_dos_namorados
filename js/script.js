@@ -419,12 +419,15 @@ function closeRetro() {
 }
 
 btnCloseRetro.addEventListener('click', closeRetro);
-btnCloseRetroX.addEventListener('click', closeRetro);
+// All X close buttons (one per page now)
+$$('[id^="btnCloseRetroX"]').forEach(btn => btn.addEventListener('click', closeRetro));
 
 // Page navigation
-$$('.btn-next-session').forEach(btn => {
+$$('.retro-btn-next').forEach(btn => {
+  if (btn.id === 'btnCloseRetro') return; // skip finalizar (handled above)
   btn.addEventListener('click', () => {
     const nextId = btn.dataset.next;
+    if (!nextId) return;
     const current = btn.closest('.retro-page');
     const next = $('#' + nextId);
     if (next) {

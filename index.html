@@ -297,7 +297,13 @@
 
         <!-- TELA 1: Horas Juntos -->
         <div class="retro-page active" id="retroPage1">
-      <div class="retro-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="retro-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <button class="retro-close" id="btnCloseRetroX">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+          </button>
+          <button class="retro-btn-next hidden" id="navPage1" data-next="retroPage2" aria-label="Próxima sessão">
+            <svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </button>
           <div class="retro-hours">
             <div class="hours-scroll" id="hoursScroll"></div>
             <div class="hours-result" id="hoursResult">
@@ -307,15 +313,17 @@
             </div>
           </div>
           <div class="confetti-container" id="hoursConfetti"></div>
-          
-          <div class="retro-nav nav-overlay hidden" id="navPage1">
-            <button class="btn-next-session" data-next="retroPage2">Próxima sessão</button>
-          </div>
         </div>
 
         <!-- TELA 2: Gênero Favorito -->
         <div class="retro-page" id="retroPage2">
-      <div class="retro-dots"><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="retro-dots"><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <button class="retro-close" id="btnCloseRetroX2">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+          </button>
+          <button class="retro-btn-next" data-next="retroPage3" aria-label="Próxima sessão">
+            <svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </button>
           <div class="retro-genre">
             <div class="genre-bg">
               <div class="genre-blob genre-blob-1"></div>
@@ -324,7 +332,6 @@
             <div class="genre-content">
               <p class="genre-subtitle">Você explorou muitos mundos neste ano...</p>
               <p class="genre-subtitle">Mas o seu Top Gênero foi o que mais tocou no repeat:</p>
-              
               <div class="genre-highlight-container">
                 <div class="genre-marquee">
                   <h2 class="genre-highlight">ROMANCE</h2>
@@ -332,21 +339,22 @@
                   <h2 class="genre-highlight">ROMANCE</h2>
                 </div>
               </div>
-              
               <div class="genre-sticker">
                 <span>Top 1% dos ouvintes de Amor</span>
               </div>
             </div>
           </div>
-          
-          <div class="retro-nav">
-            <button class="btn-next-session" data-next="retroPage3">Próxima sessão</button>
-          </div>
         </div>
 
         <!-- TELA 3: Fotos Cards -->
         <div class="retro-page" id="retroPage3">
-      <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+          <button class="retro-close" id="btnCloseRetroX3">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+          </button>
+          <button class="retro-btn-next hidden" id="navPage3" data-next="retroPage4" aria-label="Próxima sessão">
+            <svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </button>
           <div class="retro-cards">
             <div class="cards-text">
               <h2 class="card-section-title" id="cardTitle">Nosso começo</h2>
@@ -354,33 +362,25 @@
             </div>
             <div class="cards-container" id="cardsContainer">
               <div class="card-track" id="cardTrack">
-                <div class="photo-card" data-index="0">
-                  <img src="assets/images/foto1.jpg" alt="Momento 1">
-                </div>
-                <div class="photo-card" data-index="1">
-                  <img src="assets/images/foto2.jpg" alt="Momento 2">
-                </div>
-                <div class="photo-card" data-index="2">
-                  <img src="assets/images/foto3.jpg" alt="Momento 3">
-                </div>
-                <div class="photo-card" data-index="3">
-                  <img src="assets/images/foto4.jpg" alt="Momento 4">
-                </div>
-                <div class="photo-card" data-index="4">
-                  <img src="assets/images/foto5.jpg" alt="Momento 5">
-                </div>
+                <div class="photo-card" data-index="0"><img src="assets/images/foto1.jpg" alt="Momento 1"></div>
+                <div class="photo-card" data-index="1"><img src="assets/images/foto2.jpg" alt="Momento 2"></div>
+                <div class="photo-card" data-index="2"><img src="assets/images/foto3.jpg" alt="Momento 3"></div>
+                <div class="photo-card" data-index="3"><img src="assets/images/foto4.jpg" alt="Momento 4"></div>
+                <div class="photo-card" data-index="4"><img src="assets/images/foto5.jpg" alt="Momento 5"></div>
               </div>
             </div>
-          </div>
-          
-          <div class="retro-nav hidden" id="navPage3">
-            <button class="btn-next-session" data-next="retroPage4">Próxima sessão</button>
           </div>
         </div>
 
         <!-- TELA 4: Timeline -->
         <div class="retro-page" id="retroPage4">
-      <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+          <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+          <button class="retro-close" id="btnCloseRetroX4">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+          </button>
+          <button class="retro-btn-next" data-next="retroPage5" aria-label="Próxima sessão">
+            <svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </button>
           <div class="retro-timeline">
             <h2 class="section-title">Nossa jornada</h2>
             <p class="section-subtitle">Cada momento que nos trouxe até aqui</p>
@@ -388,71 +388,43 @@
             <div class="timeline-container" id="timelineContainer">
               <div class="timeline-line"></div>
               <div class="timeline-item">
-                <div class="polaroid">
-                  <img src="assets/images/foto1.jpg" alt="Momento">
-                  <div class="polaroid-caption">O dia que nos conhecemos</div>
-                </div>
+                <div class="polaroid"><img src="assets/images/foto1.jpg" alt="Momento"><div class="polaroid-caption">O dia que nos conhecemos</div></div>
                 <span class="timeline-heart">♥</span>
-                <div class="timeline-info">
-                  <div class="timeline-title">27/02/2022</div>
-                  <div class="timeline-desc">Quando nossos olhares se encontraram</div>
-                </div>
+                <div class="timeline-info"><div class="timeline-title">27/02/2022</div><div class="timeline-desc">Quando nossos olhares se encontraram</div></div>
               </div>
               <div class="timeline-item">
-                <div class="polaroid">
-                  <img src="assets/images/foto2.jpg" alt="Momento">
-                  <div class="polaroid-caption">Nossa primeira viagem</div>
-                </div>
+                <div class="polaroid"><img src="assets/images/foto2.jpg" alt="Momento"><div class="polaroid-caption">Nossa primeira viagem</div></div>
                 <span class="timeline-heart">♥</span>
-                <div class="timeline-info">
-                  <div class="timeline-title">Nosso primeiro passeio</div>
-                  <div class="timeline-desc">Aventuras que marcaram nossa história</div>
-                </div>
+                <div class="timeline-info"><div class="timeline-title">Nosso primeiro passeio</div><div class="timeline-desc">Aventuras que marcaram nossa história</div></div>
               </div>
               <div class="timeline-item">
-                <div class="polaroid">
-                  <img src="assets/images/foto3.jpg" alt="Momento">
-                  <div class="polaroid-caption">Dia inesquecível</div>
-                </div>
+                <div class="polaroid"><img src="assets/images/foto3.jpg" alt="Momento"><div class="polaroid-caption">Dia inesquecível</div></div>
                 <span class="timeline-heart">♥</span>
-                <div class="timeline-info">
-                  <div class="timeline-title">Momentos mágicos</div>
-                  <div class="timeline-desc">Cada sorriso seu é um tesouro</div>
-                </div>
+                <div class="timeline-info"><div class="timeline-title">Momentos mágicos</div><div class="timeline-desc">Cada sorriso seu é um tesouro</div></div>
               </div>
               <div class="timeline-item">
-                <div class="polaroid">
-                  <img src="assets/images/foto4.jpg" alt="Momento">
-                  <div class="polaroid-caption">Nossa cumplicidade</div>
-                </div>
+                <div class="polaroid"><img src="assets/images/foto4.jpg" alt="Momento"><div class="polaroid-caption">Nossa cumplicidade</div></div>
                 <span class="timeline-heart">♥</span>
-                <div class="timeline-info">
-                  <div class="timeline-title">Conexão única</div>
-                  <div class="timeline-desc">Dois corpos, uma alma</div>
-                </div>
+                <div class="timeline-info"><div class="timeline-title">Conexão única</div><div class="timeline-desc">Dois corpos, uma alma</div></div>
               </div>
               <div class="timeline-item">
-                <div class="polaroid">
-                  <img src="assets/images/foto5.jpg" alt="Momento">
-                  <div class="polaroid-caption">Sempre juntos</div>
-                </div>
+                <div class="polaroid"><img src="assets/images/foto5.jpg" alt="Momento"><div class="polaroid-caption">Sempre juntos</div></div>
                 <span class="timeline-heart">♥</span>
-                <div class="timeline-info">
-                  <div class="timeline-title">Para todo o sempre</div>
-                  <div class="timeline-desc">Que venham muitos anos pela frente</div>
-                </div>
+                <div class="timeline-info"><div class="timeline-title">Para todo o sempre</div><div class="timeline-desc">Que venham muitos anos pela frente</div></div>
               </div>
             </div>
-          </div>
-          
-          <div class="retro-nav">
-            <button class="btn-next-session" data-next="retroPage5">Próxima sessão</button>
           </div>
         </div>
 
         <!-- TELA 5: Constelação -->
         <div class="retro-page" id="retroPage5">
-      <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span></div>
+          <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span><span class="dot"></span></div>
+          <button class="retro-close" id="btnCloseRetroX5">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/></svg>
+          </button>
+          <button class="retro-btn-next" data-next="retroPage6" aria-label="Próxima sessão">
+            <svg viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+          </button>
           <div class="retro-constellation">
             <h2 class="constellation-names">
               <span class="handwrite-name">Juan</span>
@@ -465,15 +437,15 @@
             </div>
             <p class="constellation-subtitle">O céu quando nossos mundos se colidiram</p>
           </div>
-          
-          <div class="retro-nav">
-            <button class="btn-next-session" data-next="retroPage6">Próxima sessão</button>
-          </div>
         </div>
 
         <!-- TELA 6: Resumo do Casal -->
         <div class="retro-page" id="retroPage6">
-      <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span></div>
+          <div class="retro-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot active"></span></div>
+          <!-- Finalizar = check no canto superior direito -->
+          <button class="retro-btn-next retro-btn-check" id="btnCloseRetro" aria-label="Finalizar">
+            <svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor"/></svg>
+          </button>
           <div class="retro-summary" id="retroSummary">
             <div class="confetti-container" id="confettiContainer"></div>
             <div class="summary-content">
@@ -512,19 +484,11 @@
               </div>
             </div>
           </div>
-          
-          <div class="retro-nav">
-            <button class="btn-next-session" id="btnCloseRetro">Finalizar</button>
-          </div>
         </div>
 
       </div>
-      <button class="retro-close" id="btnCloseRetroX">
-        <svg viewBox="0 0 24 24" width="20" height="20">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
-        </svg>
-      </button>
     </div>
+
 
   </div>
 
