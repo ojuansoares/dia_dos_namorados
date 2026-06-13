@@ -1929,7 +1929,7 @@ button {
 /* iPhone notch safe area */
 @supports (padding-top: env(safe-area-inset-top)) {
   .player-header { padding-top: calc(env(safe-area-inset-top) + 8px); }
-  .about-section { padding-top: calc(25px + env(safe-area-inset-top)); }
+  .about-section { padding-top: calc(35px + env(safe-area-inset-top)); }
   .message-section { padding-top: calc(5px + env(safe-area-inset-top)); }
   .retro-section { padding-top: calc(5px + env(safe-area-inset-top)); }
   .message-player-footer { padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
